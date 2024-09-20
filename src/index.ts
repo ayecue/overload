@@ -22,8 +22,6 @@ function generateOverloadArgMapping<Context, ReturnType>(overloadArgs: OverloadA
 export function createOverload<Context = any, ReturnType = any>(id: IdGetter, ...overloadArgs: OverloadArgs<Context, ReturnType>): (...args: any[]) => ReturnType {
   const overloadArgMapping = generateOverloadArgMapping<Context, ReturnType>(overloadArgs);
 
-  console.log(overloadArgMapping);
-
   return function (this: Context, ...args: any[]): ReturnType {
     const overloadsWithMatchingSize = overloadArgMapping[args.length];
     if (overloadsWithMatchingSize !== undefined) {
