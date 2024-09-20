@@ -20,17 +20,17 @@ export class MyTestClass {
   constructor(str: string, num: number);
   constructor(...args: any[]) { }
 
-  foo(str: number): void;
-  foo(str: string): void;
-  @Overload<MyTestClass, void>([
+  foo(str: number): string;
+  foo(str: string): string;
+  @Overload<MyTestClass, string>([
     [[z.string()], function (str: string) {
       return `A String ${str}`;
     }],
   ])
-  foo(...args: any[]): void { }
+  foo(...args: any[]): any { }
 
-  bar(str: string, num?: number): void;
-  @Overload<MyTestClass, void>([
+  bar(str: string, num?: number): string;
+  @Overload<MyTestClass, string>([
     [[z.string(), z.number()], function (str: string, num: number) {
       return `A String ${str} And A Number ${num}`;
     }],
@@ -38,5 +38,5 @@ export class MyTestClass {
       return `A String ${str}`;
     }],
   ])
-  bar(...args: any[]): void { }
+  bar(...args: any[]): any { }
 }

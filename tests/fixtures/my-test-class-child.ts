@@ -8,12 +8,12 @@ export class MyTestClassChild extends MyTestClass {
     super(...args);
   }
 
-  foo(str: number): void;
-  foo(str: string): void;
+  foo(str: number): string;
+  foo(str: string): string;
   @Overload<MyTestClassChild, void>([
     [[z.number()], function (num: number) {
       return `A Number ${num}`;
     }],
   ])
-  foo(...args: any[]): void { }
+  foo(...args: any[]): any { }
 }
