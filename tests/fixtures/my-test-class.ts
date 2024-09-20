@@ -1,20 +1,5 @@
-# overload
-
-[![overload](https://circleci.com/gh/ayecue/overload.svg?style=svg)](https://circleci.com/gh/ayecue/overload)
-
-Pseudo overload via decorators.
-
-## Installation
-
-```sh
-npm install --save pseudo-overload
-```
-
-## Example
-
-```ts
 import { z } from 'zod';
-import { OverloadConstructor, Overload } from 'pseudo-overload';
+import { OverloadConstructor, Overload } from '../../dist';
 
 @OverloadConstructor<MyTestClass>([
   [[z.string(), z.number()], function (str: string, num: number) {
@@ -43,5 +28,15 @@ export class MyTestClass {
     }],
   ])
   foo(...args: any[]): void { }
+
+  bar(str: string, num?: number): void;
+  @Overload<MyTestClass, void>([
+    [[z.string(), z.number()], function (str: string, num: number) {
+      return `A String ${str} And A Number ${num}`;
+    }],
+    [[z.string()], function (str: string) {
+      return `A String ${str}`;
+    }],
+  ])
+  bar(...args: any[]): void { }
 }
-```
