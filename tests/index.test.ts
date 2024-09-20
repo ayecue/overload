@@ -17,7 +17,7 @@ describe('overload', () => {
       });
 
       test('should throw due to invalid signature', () => {
-        expect(() => new MyTestClass(123, 'test')).toThrow(TypeError);
+        expect(() => new MyTestClass(123, 'test')).toThrow(new TypeError('Cannot find matching signature MyTestClass.constructor(number, string)'));
       });
     });
 
@@ -38,12 +38,16 @@ describe('overload', () => {
       });
 
       test('should throw due to invalid signature', () => {
-        expect(() => instance!.foo(123)).toThrow(TypeError);
+        expect(() => instance!.foo(123)).toThrow(new TypeError('Cannot find matching signature MyTestClass.foo(number)'));
       });
 
       test('should use signature and respect optional arg', () => {
         expect(instance!.bar('abc')).toEqual('A String abc');
         expect(instance!.bar('abc', 123)).toEqual('A String abc And A Number 123');
+      });
+
+      test('should throw on null type with proper error', () => {
+        expect(() => instance!.bar(null)).toThrow(new TypeError('Cannot find matching signature MyTestClass.bar(null)'));
       });
     });
   });
@@ -63,7 +67,7 @@ describe('overload', () => {
       });
 
       test('should throw due to invalid signature', () => {
-        expect(() => new MyTestClassChild(123, 'test')).toThrow(TypeError);
+        expect(() => new MyTestClassChild(123, 'test')).toThrow(new TypeError('Cannot find matching signature MyTestClass.constructor(number, string)'));
       });
     });
 
@@ -84,7 +88,7 @@ describe('overload', () => {
       });
 
       test('should throw due to invalid signature', () => {
-        expect(() => instance!.foo('test')).toThrow(TypeError);
+        expect(() => instance!.foo('test')).toThrow(new TypeError('Cannot find matching signature MyTestClassChild.foo(string)'));
       });
     });
   });

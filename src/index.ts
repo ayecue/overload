@@ -3,7 +3,7 @@ import { z } from 'zod';
 export type OverloadFn<Context, ReturnType> = (this: Context, ...args: any[]) => ReturnType;
 export type OverloadArgs<Context = any, ReturnType = any> = [z.ZodTypeAny[], OverloadFn<Context, ReturnType>][];
 
-type IdGetter = () => string;
+type SignatureNameGetter = (instance: any) => string;
 
 const isNonEmptyTuple = (item: z.ZodTypeAny[]): item is [z.ZodTypeAny, ...z.ZodTypeAny[]] => {
   return item.length > 0;
@@ -19,7 +19,13 @@ function generateOverloadArgMapping<Context, ReturnType>(overloadArgs: OverloadA
   }, {});
 }
 
-export function createOverload<Context = any, ReturnType = any>(id: IdGetter, ...overloadArgs: OverloadArgs<Context, ReturnType>): (...args: any[]) => ReturnType {
+function transformArgToString(arg: any): string {
+  const type = typeof arg;
+  if (type === 'object') return arg === null ? 'null' : arg.constructor.name;
+  return type;
+}
+
+export function createOverload<Context = any, ReturnType = any>(signatureNameGetter: SignatureNameGetter, ...overloadArgs: OverloadArgs<Context, ReturnType>): (...args: any[]) => ReturnType {
   const overloadArgMapping = generateOverloadArgMapping<Context, ReturnType>(overloadArgs);
 
   return function (this: Context, ...args: any[]): ReturnType {
@@ -33,14 +39,14 @@ export function createOverload<Context = any, ReturnType = any>(id: IdGetter, ..
         }
       }
     }
-    throw new TypeError(`Cannot find signature [${args.map((item) => Array.prototype.toString.call(item)).join(', ')}] in ${id()}`);
+    throw new TypeError(`Cannot find matching signature ${signatureNameGetter(this)}(${args.map((item) => transformArgToString(item)).join(', ')})`);
   };
 }
 
-export function OverloadConstructor<Context = any, ReturnType = any>(overloadArgs: OverloadArgs<Context, ReturnType>) {
+export function OverloadConstructor<Context = any, ReturnType = any>(...overloadArgs: OverloadArgs<Context, ReturnType>) {
   return function <T extends new (...args: any[]) => {}>(constructor: T): any {
-    const id = `${constructor.name}.constructor`;
-    const overloadFn = createOverload(() => id, ...overloadArgs);
+    const sigGetter: SignatureNameGetter = (_instance) => `${constructor.name}.constructor`;
+    const overloadFn = createOverload(sigGetter, ...overloadArgs);
     const newClass = class extends constructor {
       constructor(...args: any[]) {
         super(...args);
@@ -54,16 +60,13 @@ export function OverloadConstructor<Context = any, ReturnType = any>(overloadArg
   };
 }
 
-export function Overload<Context = any, ReturnType = any>(overloadArgs: OverloadArgs<Context, ReturnType>) {
+export function Overload<Context = any, ReturnType = any>(...overloadArgs: OverloadArgs<Context, ReturnType>) {
   return function (
     target: (...args: any[]) => any,
     context: ClassMethodDecoratorContext<ThisParameterType<Context>, any>
   ) {
-    let className = 'unknown';
     const propertyName = context.name.toString();
-    context.addInitializer(function () {
-      className = this.constructor.name;
-    });
-    return createOverload(() => `${className}.${propertyName}`, ...overloadArgs);
+    const sigGetter: SignatureNameGetter = (instance) => `${instance?.constructor.name ?? 'unknown'}.${propertyName}`;
+    return createOverload(sigGetter, ...overloadArgs);
   };
 }

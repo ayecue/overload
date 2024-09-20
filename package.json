@@ -1,7 +1,7 @@
 {
   "name": "pseudo-overload",
-  "version": "0.1.1",
-  "description": "",
+  "version": "0.2.0",
+  "description": "Pseudo overload via decorators.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "typings": "./dist/index.d.ts",
@@ -29,6 +29,12 @@
   "bugs": {
     "url": "https://github.com/ayecue/pseudo-overload/issues"
   },
+  "keywords": [
+    "overloading",
+    "method-overloading",
+    "overload",
+    "pseudo-overload"
+  ],
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@types/node": "^17.0.0",

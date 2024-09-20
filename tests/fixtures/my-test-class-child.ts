@@ -10,10 +10,10 @@ export class MyTestClassChild extends MyTestClass {
 
   foo(str: number): string;
   foo(str: string): string;
-  @Overload<MyTestClassChild, void>([
+  @Overload<MyTestClassChild, void>(
     [[z.number()], function (num: number) {
       return `A Number ${num}`;
     }],
-  ])
+  )
   foo(...args: any[]): any { }
 }

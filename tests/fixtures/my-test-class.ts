@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { OverloadConstructor, Overload } from '../../dist';
 
-@OverloadConstructor<MyTestClass>([
+@OverloadConstructor<MyTestClass>(
   [[z.string(), z.number()], function (str: string, num: number) {
     this.propertyA = `${str} - ${num}`;
     this.propertyB = 'empty';
@@ -10,7 +10,7 @@ import { OverloadConstructor, Overload } from '../../dist';
     this.propertyA = 'empty';
     this.propertyB = 'provided no params'
   }]
-])
+)
 export class MyTestClass {
   propertyA: string;
   propertyB: string;
@@ -22,21 +22,21 @@ export class MyTestClass {
 
   foo(str: number): string;
   foo(str: string): string;
-  @Overload<MyTestClass, string>([
+  @Overload<MyTestClass, string>(
     [[z.string()], function (str: string) {
       return `A String ${str}`;
     }],
-  ])
+  )
   foo(...args: any[]): any { }
 
   bar(str: string, num?: number): string;
-  @Overload<MyTestClass, string>([
+  @Overload<MyTestClass, string>(
     [[z.string(), z.number()], function (str: string, num: number) {
       return `A String ${str} And A Number ${num}`;
     }],
-    [[z.string()], function (str: string) {
+    [[z.string()], function (str: string | null) {
       return `A String ${str}`;
     }],
-  ])
+  )
   bar(...args: any[]): any { }
 }
