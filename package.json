@@ -1,6 +1,6 @@
 {
   "name": "pseudo-overload",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Pseudo overload via decorators.",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ayecue/pseudo-overload.git"
+    "url": "git+https://github.com/ayecue/overload.git"
   },
   "author": {
     "name": "ayecue",
@@ -27,7 +27,7 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ayecue/pseudo-overload/issues"
+    "url": "https://github.com/ayecue/overload/issues"
   },
   "keywords": [
     "overloading",
